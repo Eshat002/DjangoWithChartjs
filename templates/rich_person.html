@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Rich People Chart</title>
+    <link rel="shortcut icon" type="image/png"
+        href="https://cdn0.iconfinder.com/data/icons/business-startup-10/50/60-512.png" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+
+
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row gx-4">
+            <div class="col-lg-7 mb-5">
+                <canvas id="barChart" style="width:100%;"></canvas>
+
+            </div>
+            <div class="col-lg-5">
+                <canvas id="pieChart" style="width:100% !important;"></canvas>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // $.ajax({
+        //     type: "GET",
+        //     url: "/charts/get-data/",
+
+        //     success: function (response) {
+
+
+        //         console.log("dos")
+        //         console.log(response)
+
+        //     },
+        //     error: function (error) {
+        //         console.log(error);
+        //     },
+
+        // });
+        // Perform Ajax request to get data from Django using jQuery
+        $.ajax({
+            url: "/charts/get-data/",
+            method: 'GET',
+            dataType: 'json',
+            success: function (dataArray) {
+
+                // Function to generate random color
+                function getRandomColor() {
+                    var letters = '0123456789ABCDEF';
+                    var color = '#';
+                    for (var i = 0; i < 6; i++) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                }
+                var barColors = ["red", "green", "blue", "orange", "brown"];
+                var ValuesX = [];
+                var ValuesY = [];
+
+                data = dataArray.data
+                console.log("data", data)
+                data.forEach(function (dataItem) {
+                    console.log("dataItem", dataItem.name)
+                    ValuesX.push(dataItem.name);
+                    ValuesY.push(dataItem.wealth);
+                });
+                console.log("dataX", ValuesX)
+
+                new Chart("barChart", {
+                    type: "bar",
+                    data: {
+                        labels: ValuesX,
+                        datasets: [{
+                            label: 'Wealth of Riches',
+                            backgroundColor: barColors,
+                            data: ValuesY
+                        }]
+                    },
+
+                });
+
+                new Chart("pieChart", {
+                    type: "pie",
+                    data: {
+                        labels: ValuesX,
+                        datasets: [{
+                            label: 'Wealth of Riches',
+                            backgroundColor: barColors,
+                            data: ValuesY
+                        }]
+                    },
+
+                });
+
+            },
+            error: function (error) {
+                console.error('Error fetching or processing data:', error);
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>
